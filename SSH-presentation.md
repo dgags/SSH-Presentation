@@ -54,20 +54,20 @@ On the server you need to modify the ssh daemon to tell it where to find the Cer
 
 Thankfully, most servers built within the past couple of years here have a properly configured ssh daemon, and the Certificate Authority's public keys file already installed. It is the sole responsibility of the server admin though to put the correct "authorized principals file" on the server.
 
-Principals files belong in the `/etc/ssh/authorized_pricipals` directory. This is an example of the contents of one:
+Principals files belong in the `/etc/ssh/authorized_principals` directory. This is an example of the contents of one:
 ```
 my-team.my-app.my-principal
 ```
 
 And that's it. You can put multiple principals inside that file too so that you can give access to completely different Teams, Apps, Principals, or any combination thereof.
 
-The second part to this of course is the *NAME* of the file. The name is critically important and has nothing to do with the contents whatsoever. Most of the servers we have here are linux based and are overwhelmingly Centos or Ubuntu based. In the case of a Centos server, there is always a `centos` user that is created as part of the OS install. When you create a file called: `/etc/ssh/authorized_pricipals/centos` with your full Principal name inside it, all the people you have configured to have access to that principal in the the Website UI will be able to use the `jump` command to login to that server using the following syntax:
+The second part to this of course is the *NAME* of the file. The name is critically important and has nothing to do with the contents whatsoever. Most of the servers we have here are linux based and are overwhelmingly Centos or Ubuntu based. In the case of a Centos server, there is always a `centos` user that is created as part of the OS install. When you create a file called: `/etc/ssh/authorized_principals/centos` with your full Principal name inside it, all the people you have configured to have access to that principal in the the Website UI will be able to use the `jump` command to login to that server using the following syntax:
 
 ```
 $ jump centos@myserver.sys.bigco.net
 ```
 
-The reason this works is because you've previously uploaded your public key to the Certificate based auth site, and if you are part of the "team.app.principal" configuration on the Website you will get back a modified copy of your ssh public key that has been signed by the Certificate Authority back end, with all of your "team.app.pricipal" assignments attached to it. When you connect to a server configured to work with Certificate based auth, your signed ssh public key is presented to the server and it's attached principals are inspected to see if there is a match to the user you're trying to connect as, `centos` in this example, and the full principal in the `/etc/ssh/authorized_pricipals/centos` file. If there's a match, and the rest of the signed public key metadata is valid, the ssh daemon let's you in.
+The reason this works is because you've previously uploaded your public key to the Certificate based auth site, and if you are part of the "team.app.principal" configuration on the Website you will get back a modified copy of your ssh public key that has been signed by the Certificate Authority back end, with all of your "team.app.principal" assignments attached to it. When you connect to a server configured to work with Certificate based auth, your signed ssh public key is presented to the server and it's attached principals are inspected to see if there is a match to the user you're trying to connect as, `centos` in this example, and the full principal in the `/etc/ssh/authorized_principals/centos` file. If there's a match, and the rest of the signed public key metadata is valid, the ssh daemon let's you in.
 
 Again this is the tip of the iceberg, there are further tricks and conveniences that you can configure in your `~/.ssh/config` file to make using Certificate based auth, and the `jump` command easier.
 
